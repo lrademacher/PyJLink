@@ -1,5 +1,6 @@
 import pylink
 from cmsis_svd.parser import SVDParser
+import cmsis_svd.data
 
 import functools
 
@@ -21,8 +22,11 @@ class jlink:
             self.jlink.open(snum)
         
         # TODO: extract from device_name
-        self.svd = SVDParser.for_packaged_svd('STMicro', 'STM32L053x.svd')
-
+        self.svd = SVDParser.for_mcu(device_name)
+        if self.svd is None:
+            print('SVD parser input parameters could not be determined')
+            exit()
+        
         self.jlink.connect(device_name, verbose=True)
 
     def __del__(self):
