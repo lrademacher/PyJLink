@@ -96,7 +96,7 @@ def plot_gpio(time_sec, delta_sec, ioc, jlink):
             print('möp')
 
     # TODO: Create data in second thread and update once per second?
-    fig,ax = plt.subplots(len(ioc.digital_signals), sharex=True)
+    _, ax = plt.subplots(len(ioc.digital_signals), sharex=True)
         
     io_num = 0
     for sig in ioc.digital_signals:
@@ -133,7 +133,7 @@ def plot_adc(time_sec, delta_sec, addr, size, ioc, jlink):
             print('möp')
 
     # TODO: Create data in second thread and update once per second?
-    fig,ax = plt.subplots(num_elem, sharex=True)
+    _, ax = plt.subplots(num_elem, sharex=True)
         
     io_num = 0
     for sig in ioc.analog_signals:

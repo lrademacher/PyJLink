@@ -15,7 +15,7 @@ class IOC:
 
 def parseFile(filename):
     ioc = IOC()
-    for i, line in enumerate(open(filename)):
+    for _, line in enumerate(open(filename)):
         for match in re.finditer(pattern_gpio_signal, line):
             ioc.signals[match.groups()[0]] = match.groups()[1]
             name_split_match = re.findall(pattern_gpio_name_split, match.groups()[0])
