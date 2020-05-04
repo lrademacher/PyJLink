@@ -95,15 +95,52 @@ def plot_gpio(time_sec, delta_sec, ioc, jlink):
             print('möp')
 
     # TODO: Create data in second thread and update once per second?
-    fig,ax = plt.subplots(len(ioc.signals), sharex=True)
+    fig,ax = plt.subplots(len(ioc.digital_signals), sharex=True)
         
     io_num = 0
-    for sig in ioc.signals:
+    for sig in ioc.digital_signals:
         ax[io_num].cla()
         ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
         ax[io_num].set_ylim([-0.2, 1.2])
         ax[io_num].set_yticks([0,1])
         ax[io_num].step(x_vals, y_vals[io_num])
+        io_num += 1
+        
+    plt.subplots_adjust(hspace=1)
+    plt.xlabel('time (sec)')
+    plt.show()
+
+def plot_adc(time_sec, delta_sec, addr, size, ioc, jlink):
+    num_elem = int(size / 2)
+    x_vals = []
+    y_vals = [[] for i in range(num_elem)]
+
+    start_time = time.time()
+
+    while (time.time() - start_time) < time_sec:
+        sample_time = time.time()
+        x_vals.append(sample_time - start_time)
+        data = jlink.jlink.memory_read16(addr, num_elem)
+        idx = 0
+        for val in data:
+            y_vals[idx].append(val)
+            idx += 1
+        time_to_sleep = delta_sec - (time.time() - sample_time)
+        if time_to_sleep > 0:
+            time.sleep(time_to_sleep)
+        else:
+            print('möp')
+
+    # TODO: Create data in second thread and update once per second?
+    fig,ax = plt.subplots(num_elem, sharex=True)
+        
+    io_num = 0
+    for sig in ioc.analog_signals:
+        ax[io_num].cla()
+        ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
+        #ax[io_num].set_ylim([-0.2, 1.2])
+        #ax[io_num].set_yticks([0,1])
+        ax[io_num].plot(x_vals, y_vals[io_num])
         io_num += 1
         
     plt.subplots_adjust(hspace=1)

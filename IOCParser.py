@@ -4,12 +4,14 @@ pattern_gpio_label = re.compile("^(P[A-Z][0-9]+).GPIO_Label=(.*)$")
 pattern_gpio_name_split = re.compile("^P([A-Z])([0-9]+)$")
 
 class IOC:
-  labels = dict()
-  signals = dict()
-  gpio = dict()
-  pin_num = dict()
-  inputGpios = []
-  outputGpios = []
+    signals = dict()
+    digital_signals = dict()
+    analog_signals = dict()
+    labels = dict()
+    gpio = dict()
+    pin_num = dict()
+    inputGpios = []
+    outputGpios = []
 
 def parseFile(filename):
     ioc = IOC()
@@ -22,10 +24,13 @@ def parseFile(filename):
                 ioc.pin_num[match.groups()[0]] = int(name_split_match[0][1])
         for match in re.finditer(pattern_gpio_label, line):
             ioc.labels[match.groups()[0]] = match.groups()[1]
-    setInputOutputGpio(ioc)
+    _setInputOutputGpio(ioc)
+    ioc.digital_signals = dict(filter(lambda elem: elem[1] == 'GPIO_Output' or elem[1] == 'GPIO_Input', ioc.signals.items()))
+    ioc.analog_signals = dict(filter(lambda elem: elem[1].startswith('ADC'), ioc.signals.items()))
     return ioc
 
-def setInputOutputGpio(ioc):
+
+def _setInputOutputGpio(ioc):
     for pin in ioc.gpio:
         if ioc.signals[pin] == 'GPIO_Input' and not ioc.gpio[pin] in ioc.inputGpios:
             ioc.inputGpios.append(ioc.gpio[pin])
