@@ -17,3 +17,4 @@
 * Ram code execution
 * Automatic controller detection (Seems not to be possible)
 * RPC (maybe use https://github.com/erpc-io/eRPC)
+* IOC parser: Analog signal sorting

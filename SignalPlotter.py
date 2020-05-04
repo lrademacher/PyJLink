@@ -74,6 +74,7 @@ def read_gpio(ioc, jlink):
 
     return gpio_data
 
+
 def plot_gpio(time_sec, delta_sec, ioc, jlink):
     x_vals = []
     y_vals = [[] for i in range(len(ioc.signals))]
@@ -138,8 +139,6 @@ def plot_adc(time_sec, delta_sec, addr, size, ioc, jlink):
     for sig in ioc.analog_signals:
         ax[io_num].cla()
         ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
-        #ax[io_num].set_ylim([-0.2, 1.2])
-        #ax[io_num].set_yticks([0,1])
         ax[io_num].plot(x_vals, y_vals[io_num])
         io_num += 1
         

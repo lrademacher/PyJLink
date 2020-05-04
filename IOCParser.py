@@ -26,6 +26,7 @@ def parseFile(filename):
             ioc.labels[match.groups()[0]] = match.groups()[1]
     _setInputOutputGpio(ioc)
     ioc.digital_signals = dict(filter(lambda elem: elem[1] == 'GPIO_Output' or elem[1] == 'GPIO_Input', ioc.signals.items()))
+    # TODO: Sort analog signals as they will be sorted in analog value array
     ioc.analog_signals = dict(filter(lambda elem: elem[1].startswith('ADC'), ioc.signals.items()))
     return ioc
 

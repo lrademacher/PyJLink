@@ -5,9 +5,12 @@ import cmsis_svd.data
 import functools
 
 class jlink:
+    jlink = None
+    # Store device rather than svd object, as parsing to device takes much time. So store this in ram.
+    svd_device = None
+
     def __init__(self, device_name):
         self.jlink = pylink.JLink()
-        self.svd = None
 
         if self.jlink.num_connected_emulators() == 0:
             print ('No emulator connected. Leaving...')
@@ -21,11 +24,12 @@ class jlink:
             snum = input()
             self.jlink.open(snum)
         
-        # TODO: extract from device_name
-        self.svd = SVDParser.for_mcu(device_name)
-        if self.svd is None:
+        svd = SVDParser.for_mcu(device_name)
+        if svd is None:
             print('SVD parser input parameters could not be determined')
             exit()
+
+        self.svd_device = svd.get_device()
         
         self.jlink.connect(device_name, verbose=True)
 
@@ -37,8 +41,8 @@ class jlink:
     @functools.lru_cache(maxsize=128)
     def get_reg_address(self, peripheral_name, register_name):
         addr = None
-        if not self.svd is None:
-            p = next((x for x in self.svd.get_device().peripherals if x.name == peripheral_name), None)
+        if not self.svd_device is None:
+            p = next((x for x in self.svd_device.peripherals if x.name == peripheral_name), None)
             if not p is None:
                 r = next((x for x in p.registers if x.name == register_name), None)
                 if not r is None:
