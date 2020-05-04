@@ -1,5 +1,5 @@
 import time
-import JLinkHdlr
+import JLinkWrapper
 
 import IOCParser
 
@@ -121,7 +121,7 @@ def plot_adc(time_sec, delta_sec, addr, size, ioc, jlink):
     while (time.time() - start_time) < time_sec:
         sample_time = time.time()
         x_vals.append(sample_time - start_time)
-        data = jlink.jlink.memory_read16(addr, num_elem)
+        data = jlink.memory_read16(addr, num_elem)
         idx = 0
         for val in data:
             y_vals[idx].append(val)

@@ -1,8 +1,8 @@
-import JLinkHdlr
+import JLinkWrapper
 import IOCParser
 import ELFRead
 
-jlink = JLinkHdlr.jlink('STM32L053C8')
+jlink = JLinkWrapper.JLink('STM32L053C8')
 ioc = IOCParser.parseFile('../target/test_gpio_output/test_gpio_output.ioc')
 elfreader = ELFRead.reader('D:\\Projects\\WILO\\Python_JLink\\target\\test_gpio_output\\Debug\\test_gpio_output.elf')
 

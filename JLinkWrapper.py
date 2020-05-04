@@ -4,25 +4,23 @@ import cmsis_svd.data
 
 import functools
 
-class jlink:
-    jlink = None
+class JLink(pylink.JLink):
     # Store device rather than svd object, as parsing to device takes much time. So store this in ram.
     svd_device = None
 
     def __init__(self, device_name):
-        self.jlink = pylink.JLink()
-
-        if self.jlink.num_connected_emulators() == 0:
+        pylink.JLink.__init__(self)
+        if self.num_connected_emulators() == 0:
             print ('No emulator connected. Leaving...')
             exit()
-        elif self.jlink.num_connected_emulators() == 1:
-            self.jlink.open()
+        elif self.num_connected_emulators() == 1:
+            self.open()
         else:
             print ('List of available emulators:')
-            print(self.jlink.connected_emulators())
+            print(self.connected_emulators())
             print ('Enter serial number of emulator which shall be connected:')
             snum = input()
-            self.jlink.open(snum)
+            self.open(snum)
         
         svd = SVDParser.for_mcu(device_name)
         if svd is None:
@@ -31,12 +29,7 @@ class jlink:
 
         self.svd_device = svd.get_device()
         
-        self.jlink.connect(device_name, verbose=True)
-
-    def __del__(self):
-        print('Exiting...Closing connection')
-        if not self.jlink is None:
-            self.jlink.close()
+        self.connect(device_name, verbose=True)
 
     @functools.lru_cache(maxsize=128)
     def get_reg_address(self, peripheral_name, register_name):
@@ -52,12 +45,12 @@ class jlink:
     def modify_register(self, peripheral_name, register_name, bitmask, value):
         reg_addr = self.get_reg_address(peripheral_name, register_name)
         if not reg_addr is None:
-            self.jlink.memory_write32(reg_addr, [self.jlink.memory_read32(reg_addr, 1)[0] & (~ bitmask) | value])
+            self.memory_write32(reg_addr, [self.memory_read32(reg_addr, 1)[0] & (~ bitmask) | value])
 
     def read_register(self, peripheral_name, register_name):
         reg_addr = self.get_reg_address(peripheral_name, register_name)
         if not reg_addr is None:
-            return self.jlink.memory_read32(reg_addr, 1)[0]
+            return self.memory_read32(reg_addr, 1)[0]
 
     def gpio_setmode(self, peripheral_name, pin_num, mode):
         self.modify_register(peripheral_name, 'MODER', (0b11 << pin_num*2), (mode << pin_num*2))
