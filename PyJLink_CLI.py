@@ -14,5 +14,3 @@ elfreader = ELFRead.reader('D:\\Projects\\WILO\\Python_JLink\\target\\test_gpio_
 # SignalPlotter.plot_gpio(5, 0.01, ioc, jlink)
 #SignalPlotter.plot_adc(5, 0.01, elfreader.getAddressOfSym('adcBuffer'), elfreader.getSizeOfSym('adcBuffer'), ioc, jlink)
 
-# import timeit
-# timeit.timeit('jlink.get_reg_address(\'GPIOA\', \'MODER\')', 'from PyJLink import jlink', number = 10)
