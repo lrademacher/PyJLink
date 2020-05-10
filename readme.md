@@ -25,3 +25,4 @@
 * Ram code execution
 * Automatic controller detection (Seems not to be possible)
 * IOC parser: Analog signal sorting
+* Replace RPC json by cbor or messagepack
