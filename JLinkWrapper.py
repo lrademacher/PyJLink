@@ -4,6 +4,15 @@ import cmsis_svd.data
 
 import functools
 
+import json
+
+def _is_json(myjson):
+    try:
+        json_object = json.loads(myjson)
+    except ValueError as e:
+        return False
+    return True
+
 class JLink(pylink.JLink):
     # Store device rather than svd object, as parsing to device takes much time. So store this in ram.
     svd_device = None
@@ -26,10 +35,14 @@ class JLink(pylink.JLink):
         if svd is None:
             print('SVD parser input parameters could not be determined')
             exit()
-
+         
         self.svd_device = svd.get_device()
         
         self.connect(device_name, verbose=True)
+        
+        self.restart()
+        
+        self.rtt_start()
 
     @functools.lru_cache(maxsize=128)
     def get_reg_address(self, peripheral_name, register_name):
@@ -60,3 +73,13 @@ class JLink(pylink.JLink):
     
     def gpio_getinput(self, peripheral_name, pin_num):
         return (self.read_register(peripheral_name, 'IDR') >> pin_num) & 1
+
+    def rpc_exec(self, funcId, params):
+        req_obj = {}
+        req_obj['f']=funcId
+        req_obj['p']=params
+        self.rtt_write(0, bytes(str(req_obj)+str('\0'), 'ascii'))
+        response = []
+        while not _is_json(''.join(chr(i) for i in response)):
+            response = response + self.rtt_read(0, 200)
+        return json.loads(''.join(chr(i) for i in response))['p']

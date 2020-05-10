@@ -11,6 +11,5 @@ elfreader = ELFRead.reader('D:\\Projects\\WILO\\Python_JLink\\target\\test_gpio_
 #gpio_setmode('GPIOA', 5, 1)
 #gpio_setoutput('GPIOA', 5, 1)
 
-SignalPlotter.plot_gpio(5, 0.01, ioc, jlink)
-SignalPlotter.plot_adc(5, 0.01, elfreader.getAddressOfSym('adcBuffer'), elfreader.getSizeOfSym('adcBuffer'), ioc, jlink)
-
+#SignalPlotter.plot_gpio(5, 0.01, ioc, jlink)
+#SignalPlotter.plot_adc(5, 0.01, elfreader.getAddressOfSym('adcBuffer'), elfreader.getSizeOfSym('adcBuffer'), ioc, jlink)
