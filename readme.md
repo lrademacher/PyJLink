@@ -9,8 +9,7 @@
 
 ### Target code dependencies
 * <https://github.com/bblanchon/ArduinoJson>
-* SeggerRTT <https://wiki.segger.com/RTT> 
- - (BufferSizeDown should be increased to something like 256, BufferSizeUp can be decreased to 256). If RTT needs to be used as print channel, use channel 1 for RPC.
+* SeggerRTT <https://wiki.segger.com/RTT> (BufferSizeDown should be increased to something like 256, BufferSizeUp can be decreased to 256). If RTT needs to be used as print channel, use channel 1 for RPC.
 
 ## Features
 
