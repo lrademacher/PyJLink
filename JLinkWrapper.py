@@ -6,12 +6,7 @@ import functools
 
 import json
 
-def _is_json(myjson):
-    try:
-        json_object = json.loads(myjson)
-    except ValueError as e:
-        return False
-    return True
+import time
 
 class JLink(pylink.JLink):
     # Store device rather than svd object, as parsing to device takes much time. So store this in ram.
@@ -75,11 +70,27 @@ class JLink(pylink.JLink):
         return (self.read_register(peripheral_name, 'IDR') >> pin_num) & 1
 
     def rpc_exec(self, funcId, params):
+        if self.halted():
+            raise Exception('RPC will not respond in halted mode.')
+        
         req_obj = {}
         req_obj['f']=funcId
         req_obj['p']=params
         self.rtt_write(0, bytes(str(req_obj)+str('\0'), 'ascii'))
         response = []
+        start_time = time.time()
         while not _is_json(''.join(chr(i) for i in response)):
+            if time.time() - start_time > 10:
+                raise Exception('Timeout waiting for rcp response.')
             response = response + self.rtt_read(0, 200)
+        result = json.loads(''.join(chr(i) for i in response))
+        if 'err' in result.keys():
+            raise Exception('Target error \"' + result['err'] + '\" occured.')
         return json.loads(''.join(chr(i) for i in response))['p']
+
+def _is_json(myjson):
+    try:
+        json_object = json.loads(myjson)
+    except ValueError as e:
+        return False
+    return True

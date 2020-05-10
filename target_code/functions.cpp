@@ -28,6 +28,12 @@ void rpc_executeFunction(StaticJsonDocument<200>& receiveResponseDoc)
 			receiveResponseDoc["p"][0] = 5;
 			break;
 		}
+
+		default:
+		{
+			receiveResponseDoc["err"] = "func unknown";
+			break;
+		}
 	}
 
 
