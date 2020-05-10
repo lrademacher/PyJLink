@@ -1,22 +1,31 @@
-// TODO: Maybe provide more abstract interface than directly binson?
 #include "rpc.h"
 #include "ArduinoJson.h"
 
-void rpc_executeFunction(StaticJsonDocument<200>& receiveDoc)
+typedef enum {
+	SetBlinkDelay = 1,
+	// Add functions here
+} functions;
+
+void clearParamsForResponse(StaticJsonDocument<200>& receiveResponseDoc)
 {
-	int funcId = receiveDoc["f"];
-	int numParam = receiveDoc["p"].size();
+	receiveResponseDoc.remove("p");
+	receiveResponseDoc["p"] = receiveResponseDoc["p"].to<JsonArray>();
+}
+
+void rpc_executeFunction(StaticJsonDocument<200>& receiveResponseDoc)
+{
+	int funcId = receiveResponseDoc["f"];
+	int numParam = receiveResponseDoc["p"].size();
 
 	switch(funcId)
 	{
-		case 1:
+		case SetBlinkDelay:
 		{
 			extern uint16_t blinkDelay;
-			blinkDelay = receiveDoc["p"][0];
-//			receiveDoc["p"] = doc.to<JsonArray>();
-			receiveDoc.remove("p");
-			receiveDoc["p"] = receiveDoc["p"].to<JsonArray>();
-			receiveDoc["p"][0] = 5;
+			blinkDelay = receiveResponseDoc["p"][0];
+
+			// creating response
+			receiveResponseDoc["p"][0] = 5;
 			break;
 		}
 	}
