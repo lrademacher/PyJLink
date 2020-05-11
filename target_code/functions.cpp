@@ -25,6 +25,7 @@ void rpc_executeFunction(StaticJsonDocument<200>& receiveResponseDoc)
 			blinkDelay = receiveResponseDoc["p"][0];
 
 			// creating response
+      clearParamsForResponse(receiveResponseDoc);
 			receiveResponseDoc["p"][0] = 5;
 			break;
 		}

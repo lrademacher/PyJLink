@@ -1,11 +1,9 @@
 import pylink
 from cmsis_svd.parser import SVDParser
 import cmsis_svd.data
-
+import os
 import functools
-
 import json
-
 import time
 
 class JLink(pylink.JLink):
@@ -13,7 +11,7 @@ class JLink(pylink.JLink):
     svd_device = None
 
     def __init__(self, device_name):
-        pylink.JLink.__init__(self)
+        pylink.JLink.__init__(self, lib=pylink.library.Library(dllpath=os.getcwd()+os.path.sep+'JLinkARM.dll'))
         if self.num_connected_emulators() == 0:
             print ('No emulator connected. Leaving...')
             exit()
@@ -76,7 +74,9 @@ class JLink(pylink.JLink):
         req_obj = {}
         req_obj['f']=funcId
         req_obj['p']=params
-        self.rtt_write(0, bytes(str(req_obj)+str('\0'), 'ascii'))
+        bytes_written = self.rtt_write(0, bytes(str(req_obj)+str('\0'), 'ascii'))
+        if bytes_written < len(str(req_obj)) + 1:
+            raise Exception('Could not send full rpc request. Is RTT config BUFFER_SIZE_DOWN too small? Increase to 256.')
         response = []
         start_time = time.time()
         while not _is_json(''.join(chr(i) for i in response)):
