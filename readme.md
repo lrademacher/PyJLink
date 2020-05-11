@@ -9,6 +9,7 @@
 * <https://github.com/eliben/pyelftools>
 * https://github.com/matplotlib/matplotlib
 * JLinkARM.dll needs to be put into the root script directoy
+* https://docs.pytest.org/
 
 ### Target code dependencies
 * <https://github.com/bblanchon/ArduinoJson>
