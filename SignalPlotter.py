@@ -93,12 +93,12 @@ def plot_gpio(time_sec, delta_sec, ioc, jlink):
         if time_to_sleep > 0:
             time.sleep(time_to_sleep)
         else:
-            print('möp')
+            print('Missed sample point by ' + str(time_to_sleep * -1) + ' seconds')
 
     # TODO: Create data in second thread and update once per second?
     _, ax = plt.subplots(len(ioc.digital_signals), sharex=True)
     
-    if num_elem > 1:
+    if len(ioc.digital_signals) > 1:
       io_num = 0
       for sig in ioc.digital_signals:
           ax[io_num].cla()
@@ -138,7 +138,7 @@ def plot_adc(time_sec, delta_sec, addr, size, ioc, jlink):
         if time_to_sleep > 0:
             time.sleep(time_to_sleep)
         else:
-            print('möp')
+            print('Missed sample point by ' + str(time_to_sleep * -1) + ' seconds')
 
     # TODO: Create data in second thread and update once per second?
     _, ax = plt.subplots(num_elem, sharex=True)
