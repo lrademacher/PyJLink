@@ -7,9 +7,6 @@ import json
 import time
 
 class JLink(pylink.JLink):
-    # Store device rather than svd object, as parsing to device takes much time. So store this in ram.
-    svd_device = None
-
     def __init__(self, device_name):
         pylink.JLink.__init__(self, lib=pylink.library.Library(dllpath=os.getcwd()+os.path.sep+'JLinkARM.dll'))
         if self.num_connected_emulators() == 0:
@@ -29,6 +26,7 @@ class JLink(pylink.JLink):
             print('SVD parser input parameters could not be determined')
             exit()
          
+        # Store device rather than svd object, as parsing to device takes much time. So store this in ram.
         self.svd_device = svd.get_device()
         
         self.connect(device_name, verbose=True)
