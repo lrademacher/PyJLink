@@ -2,6 +2,7 @@
 
 ## Dependencies
 
+* Python 3
 * <https://github.com/square/pylink>
 * <https://github.com/posborne/cmsis-svd>
   => Currently do not use the version from pip, as it does not contain SVDParser.for_mcu but install from repo. Caution: On windows you have to copy the data directory to python\cmsis_svd directory as the symlink does not work correctly for installation
