@@ -97,16 +97,24 @@ def plot_gpio(time_sec, delta_sec, ioc, jlink):
 
     # TODO: Create data in second thread and update once per second?
     _, ax = plt.subplots(len(ioc.digital_signals), sharex=True)
-        
-    io_num = 0
-    for sig in ioc.digital_signals:
-        ax[io_num].cla()
-        ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
-        ax[io_num].set_ylim([-0.2, 1.2])
-        ax[io_num].set_yticks([0,1])
-        ax[io_num].step(x_vals, y_vals[io_num])
-        io_num += 1
-        
+    
+    if num_elem > 1:
+      io_num = 0
+      for sig in ioc.digital_signals:
+          ax[io_num].cla()
+          ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
+          ax[io_num].set_ylim([-0.2, 1.2])
+          ax[io_num].set_yticks([0,1])
+          ax[io_num].step(x_vals, y_vals[io_num])
+          io_num += 1
+    else:
+      sig = next(iter(ioc.digital_signals.keys()))
+      ax.cla()
+      ax.set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
+      ax.set_ylim([-0.2, 1.2])
+      ax.set_yticks([0,1])
+      ax.step(x_vals, y_vals[0])
+    
     plt.subplots_adjust(hspace=1)
     plt.xlabel('time (sec)')
     plt.show()
@@ -135,12 +143,18 @@ def plot_adc(time_sec, delta_sec, addr, size, ioc, jlink):
     # TODO: Create data in second thread and update once per second?
     _, ax = plt.subplots(num_elem, sharex=True)
         
-    io_num = 0
-    for sig in ioc.analog_signals:
-        ax[io_num].cla()
-        ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
-        ax[io_num].plot(x_vals, y_vals[io_num])
-        io_num += 1
+    if num_elem > 1:
+      io_num = 0
+      for sig in ioc.analog_signals:
+          ax[io_num].cla()
+          ax[io_num].set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
+          ax[io_num].plot(x_vals, y_vals[io_num])
+          io_num += 1
+    else:
+      sig = next(iter(ioc.analog_signals.keys()))
+      ax.cla()
+      ax.set_title(sig + ' (' + ioc.labels[sig] + ') [' + ioc.signals[sig] + ']')
+      ax.plot(x_vals, y_vals[0])
         
     plt.subplots_adjust(hspace=1)
     plt.xlabel('time (sec)')
