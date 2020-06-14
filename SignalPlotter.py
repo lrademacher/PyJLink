@@ -104,21 +104,31 @@ class Plotter:
             
         if num_elem > 1:
             io_num = 0
-            for sig in self._ioc.analog_signals:
-                ax[io_num].cla()
-                ax[io_num].set_title(sig + ' (' + self._ioc.labels[sig] + ') [' + self._ioc.signals[sig] + ']')
-                ax[io_num].plot(x_vals, y_vals[io_num])
-                io_num += 1
+            # first print all signals of first ADC, then go to the next and so on...
+            for adc in self._ioc.adcs:
+                for sig in self._ioc.adcs[adc].regularConversionPins:
+                    ax[io_num].cla()
+                    ax[io_num].set_title(self._gen_adc_title(sig))
+                    ax[io_num].plot(x_vals, y_vals[io_num])
+                    io_num += 1
         else:
+            # Print single signal
             sig = next(iter(self._ioc.analog_signals.keys()))
             ax.cla()
-            ax.set_title(sig + ' (' + self._ioc.labels[sig] + ') [' + self._ioc.signals[sig] + ']')
+            ax.set_title(self._gen_adc_title(sig))
             ax.plot(x_vals, y_vals[0])
          
         plt.subplots_adjust(hspace=1)
         plt.xlabel('time (sec)')
         plt.show()
-
+    
+    def _gen_adc_title(self, sig):
+        titlestr = sig
+        if sig in self._ioc.labels:
+            titlestr += ' (' + self._ioc.labels[sig] + ')'
+        if sig in self._ioc.signals:
+            titlestr += ' [' + self._ioc.signals[sig] + ']'
+        return titlestr
 
     #def animate_gpio_plot(i, jlink):	
 #	odr_val = jlink.read_register('GPIOA', 'ODR')
